@@ -19,7 +19,7 @@ Além de classificar jogadores, a IA também calcula a **sinergia de cada time**
 
 ➡️ [Como foi feito](#-o-que-foi-feito-explicação-simples)
 
-➡️ [Estilos criados](#-os-estilos-de-jogo-criados)]
+➡️ [Estilos criados](#-os-estilos-de-jogo-criados)
 
 ➡️ [Critérios de classificação](#-critérios-de-classificação-por-estilo)
 
@@ -29,7 +29,7 @@ Além de classificar jogadores, a IA também calcula a **sinergia de cada time**
 
 ➡️ [Resultados e gráficos](#-entendendo-os-resultados)
 
-➡️ [Créditos e licença](#-autoria-e-créditos)
+➡️ [Créditos e licença](#-autoria-e-creditos)
 
 ---
 
