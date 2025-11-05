@@ -102,6 +102,7 @@ A IA acertou **3 dos 4 times reais**.
 ---
 
 ## ⚙️ Como usar
+{id=como-usar}
 
 ```powershell
 pip install -r requirements.txt
@@ -200,6 +201,7 @@ Campeão real: T1 🏆
 ---
 
 ## 👩‍💻 Autoria e Créditos
+{id=autoria-e-creditos}
 
 * **Autora:** Laura Barbosa Henrique (`@tinywin`)
 * **Instituição:** Universidade Federal do Tocantins (UFT)
