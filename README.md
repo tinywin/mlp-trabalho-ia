@@ -213,7 +213,22 @@ O relatório gera:
 > Estilos com pouquíssimos exemplos (como Suporte e Duelista) tendem a ter métricas fracas (por exemplo, F1 ≈ 0 em algumas execuções), simplesmente por falta de dados suficientes.
 > Com mais jogadores rotulados nesses estilos ou técnicas de balanceamento (oversampling/SMOTE, por exemplo), o modelo pode melhorar nesses casos específicos.
 
+<<<<<<< HEAD
 ---
+=======
+Nota sobre desequilíbrio de classes: estilos com poucos exemplos (como Suporte e Duelista) tendem a apresentar métricas mais baixas (até F1 ≈ 0) por falta de dados suficientes. Em cenários assim, técnicas de balanceamento (ex.: oversampling/SMOTE) ou coleta de mais exemplos ajudam a melhorar o aprendizado nessas classes raras.
+
+### 💬 Exemplo de saída do relatório
+
+```
+Acurácia: 0.80
+Precisão média: 0.86
+Estilo mais comum previsto: Agressivo
+Time mais equilibrado: Weibo Gaming
+MVP segundo a IA: xiaohu (Weibo Gaming)
+Campeão real: T1 🏆
+```
+>>>>>>> b56eed55a7da36f15713b848d6af34923123abee
 
 ## 🖼️ Interpretação dos gráficos
 
@@ -227,7 +242,11 @@ O relatório gera:
 | `predicoes_completas_*.csv`     | Tabela detalhada de previsões     | Estilos previstos por jogador                           |
 | `relatorio_estilos_*.txt`       | Relatório completo                | Métricas gerais, destaques e notas                      |
 
+<<<<<<< HEAD
 ---
+=======
+## 🧪 Observações técnicas
+>>>>>>> b56eed55a7da36f15713b848d6af34923123abee
 
 ## 🧑‍🤝‍🧑 Estilo coletivo por time
 
@@ -283,11 +302,16 @@ O código e os experimentos são disponibilizados para fins de **aprendizado e p
 
 ## 🧾 Resumo simples
 
+<<<<<<< HEAD
 > “Treinei uma rede neural para reconhecer o estilo de jogo de jogadores do Mundial de LoL 2024 usando estatísticas reais.
 > A IA aprendeu a identificar perfis como Agressivo, Carregador e Visionário, alcançando cerca de **70% de acerto** (≈68% no teste hold-out e ≈74% em validação cruzada).
 > Mesmo com boas previsões, o modelo mostra que números nem sempre capturam o fator humano — por isso, a T1 continua sendo a campeã real.”
 
 ---
+=======
+Treinei uma rede neural para reconhecer o estilo de jogo de jogadores do Mundial de LoL 2024 usando estatísticas reais.  A IA aprendeu a identificar perfis como Agressivo, Carregador e Visionário, alcançando cerca de 80% de acerto.  
+Mesmo com boas previsões, o modelo mostra que números nem sempre capturam o fator humano — por isso, a T1 continua sendo a campeã real.
+>>>>>>> b56eed55a7da36f15713b848d6af34923123abee
 
 ## 🏁 Conclusão
 
