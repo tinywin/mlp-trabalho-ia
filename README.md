@@ -155,9 +155,8 @@ Este projeto é educacional e sem fins comerciais. O código e os dados são dis
 
 ## 🧾 Resumo simples
 
-“Treinei uma rede neural para reconhecer o estilo de jogo de jogadores do Mundial de LoL 2024 usando estatísticas reais.  
-A IA aprendeu a identificar perfis como Agressivo, Carregador e Visionário, alcançando cerca de 80% de acerto.  
-Mesmo com boas previsões, o modelo mostra que números nem sempre capturam o fator humano — por isso, a T1 continua sendo a campeã real.”
+Treinei uma rede neural para reconhecer o estilo de jogo de jogadores do Mundial de LoL 2024 usando estatísticas reais.  A IA aprendeu a identificar perfis como Agressivo, Carregador e Visionário, alcançando cerca de 80% de acerto.  
+Mesmo com boas previsões, o modelo mostra que números nem sempre capturam o fator humano — por isso, a T1 continua sendo a campeã real.
 
 ## 🏁 Conclusão
 
