@@ -168,7 +168,7 @@ Campeão real: T1 🏆
 
 ---
 
-## 🧑‍🤝‍🧑 Estilo coletivo por time
+## 🧑‍🤝‍🧑 Estilo coletivo por time (exemplos)
 
 * **T1** — predominância *Consistente*
 * **Weibo Gaming** — *Agressivo*
