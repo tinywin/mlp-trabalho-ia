@@ -104,7 +104,7 @@ Observação: mesmo que a IA tenha escolhido Weibo Gaming como o time mais equil
 
 Nota sobre desequilíbrio de classes: estilos com poucos exemplos (como Suporte e Duelista) tendem a apresentar métricas mais baixas (até F1 ≈ 0) por falta de dados suficientes. Em cenários assim, técnicas de balanceamento (ex.: oversampling/SMOTE) ou coleta de mais exemplos ajudam a melhorar o aprendizado nessas classes raras.
 
-### � Exemplo de saída do relatório
+### 💬 Exemplo de saída do relatório
 
 ```
 Acurácia: 0.80
@@ -127,7 +127,7 @@ Campeão real: T1 🏆
 | `predicoes_completas_*.csv`     | Tabela detalhada de previsões           | Estilos previstos por jogador                      |
 | `relatorio_estilos_*.txt`       | Relatório completo                      | Métricas gerais, destaques e notas                 |
 
-## �🧪 Observações técnicas
+## 🧪 Observações técnicas
 
 - Dados categóricos foram codificados (ex.: LabelEncoder para colunas discretas).
 - Dados numéricos foram padronizados (StandardScaler, z-score).
