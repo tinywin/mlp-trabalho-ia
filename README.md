@@ -1,4 +1,4 @@
-# MLP – Estilos de Jogo no LoL Worlds 2024
+# 🎮 MLP – Estilos de Jogo no LoL Worlds 2024
 
 [![Python](https://img.shields.io/badge/Python-3.11+-blue?logo=python)](https://www.python.org/)
 [![Scikit-Learn](https://img.shields.io/badge/scikit--learn-MLPClassifier-orange?logo=scikitlearn)](https://scikit-learn.org/)
@@ -15,20 +15,7 @@ Além de classificar jogadores, a IA também calcula a **sinergia de cada time**
 
 ---
 
-## Sumário rápido
-
-* [Como foi feito](#o-que-foi-feito-explicacao-simples)
-* [Estilos criados](#os-estilos-de-jogo-criados)
-* [Critérios de classificação](#criterios-de-classificacao-por-estilo)
-* [Sinergia de time e Top 4 IA](#sinergia-de-time-e-campeao-ia)
-* [Como rodar o projeto](#como-usar)
-* [Resultados e gráficos](#entendendo-os-resultados)
-* [Créditos e licença](#autoria-e-creditos)
-* [Licença e uso](#licenca-e-uso)
-
----
-
-## O que foi feito (explicação simples)
+## 🧠 O que foi feito (explicação simples)
 
 1. Foram coletados dados reais de **81 jogadores** do campeonato
    (fonte: [Kaggle Dataset](https://www.kaggle.com/datasets/anmatngu/2024-lol-championship-player-stats-and-swiss-stage)).
@@ -40,58 +27,58 @@ Além de classificar jogadores, a IA também calcula a **sinergia de cada time**
 
 ---
 
-## O que é uma MLP
+## 🔍 O que é uma MLP
 
 A **MLP (Multi-Layer Perceptron)** é uma rede neural totalmente conectada que aprende padrões a partir de exemplos.
 Neste projeto, ela recebe estatísticas como **KDA, DPM, GPM, KP%, visão, Solo Kills, GD@15** e aprende a associá-las a um **estilo de jogo primário**.
 
 ---
 
-## Os estilos de jogo criados
+## 🧩 Os estilos de jogo criados
 
-| Estilo          | Explicação simples                                       |
-| :-------------- | :------------------------------------------------------- |
-| **Agressivo**   | Parte pra cima, busca abates e pressiona o mapa.         |
-| **Carregador**  | Principal fonte de dano e vitórias do time (carry).      |
-| **Consistente** | Joga de forma segura, erra pouco, mantém bom desempenho. |
-| **Duelista**    | Forte em lutas 1x1, depende da mecânica individual.      |
-| **Equilibrado** | Mistura ataque e defesa, joga de forma adaptável.        |
-| **Volátil**     | Instável: pode jogar muito bem ou muito mal.             |
-| **Suporte**     | Ajuda o time com visão, cura, proteção e controle.       |
-| **Visionário**  | Foca em controle de mapa e visão estratégica.            |
+| Estilo             | Explicação simples                                       |
+| :----------------- | :------------------------------------------------------- |
+| 🗡️ **Agressivo**  | Parte pra cima, busca abates e pressiona o mapa.         |
+| 💪 **Carregador**  | Principal fonte de dano e vitórias do time (carry).      |
+| 🧱 **Consistente** | Joga de forma segura, erra pouco, mantém bom desempenho. |
+| ⚔️ **Duelista**    | Forte em lutas 1x1, depende da mecânica individual.      |
+| ⚖️ **Equilibrado** | Mistura ataque e defesa, joga de forma adaptável.        |
+| 💥 **Volátil**     | Instável: pode jogar muito bem ou muito mal.             |
+| 🩹 **Suporte**     | Ajuda o time com visão, cura, proteção e controle.       |
+| 🔮 **Visionário**  | Foca em controle de mapa e visão estratégica.            |
 
 Cada jogador pode ter **múltiplos estilos**. Para treinar, é escolhido um **Estilo Primário**.
 
 ---
 
-## Critérios de classificação por estilo
+## 🎯 Critérios de classificação por estilo
 
-| Estilo          | Regra (simplificada)                             | Interpretação breve                 |
-| :-------------- | :----------------------------------------------- | :---------------------------------- |
-| **Carregador**  | DPM > p75 ∧ GPM > média ∧ KDA > média            | Dano alto, bom ouro e poucas mortes |
-| **Agressivo**   | DPM > média ∧ (KP% > média ∨ Solo Kills > média) | Cria jogadas                        |
-| **Visionário**  | VSPM > média ∧ WPM > média ∧ DPM < média         | Foco em controle e visão            |
-| **Suporte**     | KP% > média ∧ WPM > média ∧ GPM < média          | Participativo e protetor            |
-| **Consistente** | KDA > p75 ∧ Avg Deaths < média                   | Estável e difícil de punir          |
-| **Volátil**     | GD@15 < 0 ∧ Avg Deaths > média                   | Oscilante                           |
-| **Duelista**    | Solo Kills > p75 ∧ DPM > média                   | Forte 1x1                           |
-| **Equilibrado** | Nenhuma das regras acima                         | Meio-termo                          |
+| Estilo             | Regra (simplificada)                             | Interpretação breve                 |
+| :----------------- | :----------------------------------------------- | :---------------------------------- |
+| 💪 **Carregador**  | DPM > p75 ∧ GPM > média ∧ KDA > média            | Dano alto, bom ouro e poucas mortes |
+| 🗡️ **Agressivo**  | DPM > média ∧ (KP% > média ∨ Solo Kills > média) | Cria jogadas                        |
+| 🔮 **Visionário**  | VSPM > média ∧ WPM > média ∧ DPM < média         | Foco em controle e visão            |
+| 🩹 **Suporte**     | KP% > média ∧ WPM > média ∧ GPM < média          | Participativo e protetor            |
+| 🧱 **Consistente** | KDA > p75 ∧ Avg Deaths < média                   | Estável e difícil de punir          |
+| 💥 **Volátil**     | GD@15 < 0 ∧ Avg Deaths > média                   | Oscilante                           |
+| ⚔️ **Duelista**    | Solo Kills > p75 ∧ DPM > média                   | Forte 1x1                           |
+| ⚖️ **Equilibrado** | Nenhuma das regras acima                         | Meio-termo                          |
 
 **Prioridade:**
 Carregador > Agressivo > Visionário > Suporte > Consistente > Volátil > Duelista > Equilibrado.
 
 ---
 
-## Sinergia de time e campeão IA
+## 🤝 Sinergia de time e campeão IA
 
 **Synergy Score = 0,7 · StyleScore + 0,3 · PerfScore**
 
 **Top 4 IA (sinergia estilo + performance)**
 
-1. **Weibo Gaming** — ≈ 4,07
-2. **T1** — ≈ 4,06
-3. **Gen.G** — ≈ 3,62
-4. **Team Liquid** — ≈ 3,49
+1. 🏆 **Weibo Gaming** — ≈ 4,07
+2. 🥈 **T1** — ≈ 4,06
+3. 🥉 **Gen.G** — ≈ 3,62
+4. 💪 **Team Liquid** — ≈ 3,49
 
 **MVP IA:** `xiaohu` (Weibo Gaming)
 
@@ -102,7 +89,7 @@ A IA acertou **3 dos 4 times reais**.
 
 ---
 
-## Como usar
+## ⚙️ Como usar
 
 ```powershell
 pip install -r requirements.txt
@@ -113,7 +100,7 @@ O script lê a base, calcula estilos, treina a MLP e gera relatórios em `output
 
 ---
 
-## Estrutura do projeto
+## 🗂️ Estrutura do projeto
 
 ```
 📁 src/
@@ -131,9 +118,9 @@ O script lê a base, calcula estilos, treina a MLP e gera relatórios em `output
 
 ---
 
-## Entendendo os resultados
+## 📈 Entendendo os resultados
 
-### Métricas
+### ✅ Métricas
 
 * **Acurácia (hold-out):** 0,68
 * **Precisão ponderada:** 0,73
@@ -143,7 +130,7 @@ O script lê a base, calcula estilos, treina a MLP e gera relatórios em `output
 
 ---
 
-### Métricas explicadas
+### 🧾 Métricas explicadas
 
 | Métrica      | Significado                            |
 | :----------- | :------------------------------------- |
@@ -154,7 +141,7 @@ O script lê a base, calcula estilos, treina a MLP e gera relatórios em `output
 
 ---
 
-### Exemplo de relatório
+### 💬 Exemplo de relatório
 
 ```
 Acurácia: 0.80
@@ -162,12 +149,12 @@ Precisão média: 0.86
 Estilo mais comum previsto: Agressivo
 Time mais equilibrado: Weibo Gaming
 MVP segundo a IA: xiaohu (Weibo Gaming)
-Campeão real: T1
+Campeão real: T1 🏆
 ```
 
 ---
 
-## Gráficos
+## 🖼️ Gráficos
 
 | Arquivo                         | Mostra                  | Interpretação                    |
 | :------------------------------ | :---------------------- | :------------------------------- |
@@ -181,7 +168,7 @@ Campeão real: T1
 
 ---
 
-## Estilo coletivo por time
+## 🧑‍🤝‍🧑 Estilo coletivo por time
 
 * **T1** — predominância *Consistente*
 * **Weibo Gaming** — *Agressivo*
@@ -190,7 +177,7 @@ Campeão real: T1
 
 ---
 
-## Observações técnicas
+## 🧪 Observações técnicas
 
 * LabelEncoder para dados categóricos
 * StandardScaler (z-score)
@@ -200,7 +187,7 @@ Campeão real: T1
 
 ---
 
-## Autoria e creditos
+## 👩‍💻 Autoria e créditos
 
 * **Autora:** Laura Barbosa Henrique (`@tinywin`)
 * **Instituição:** Universidade Federal do Tocantins (UFT)
@@ -214,14 +201,14 @@ Autor: **nxank4 (An)** — DOI: [10.34740/kaggle/dsv/9722676](https://doi.org/10
 
 ---
 
-## Licenca e uso
+## ⚖️ Licença e uso
 
 Projeto **educacional**, sem fins comerciais.
 Código e experimentos liberados para **aprendizado e pesquisa**, respeitando os termos do Kaggle.
 
 ---
 
-## Resumo simples
+## 🧾 Resumo simples
 
 > “Treinei uma rede neural para reconhecer o estilo de jogo de jogadores do Mundial de LoL 2024 usando estatísticas reais.
 > A IA aprendeu a identificar perfis como Agressivo, Carregador e Visionário, alcançando cerca de **70% de acerto**.
@@ -229,7 +216,7 @@ Código e experimentos liberados para **aprendizado e pesquisa**, respeitando os
 
 ---
 
-## Conclusao
+## 🏁 Conclusão
 
 A rede MLP identificou **padrões estatísticos coerentes** com estilos reais.
 Acertou 3 dos 4 times do Top 4 e destacou limitações quantitativas — sem captar aspectos humanos como:
