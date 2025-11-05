@@ -19,11 +19,16 @@ Além de classificar jogadores, a IA também calcula a **sinergia de cada time**
 
 ➡️ [Como foi feito](#-o-que-foi-feito-explicação-simples)
 
-➡️ [Estilos criados](#-os-estilos-de-jogo-criados)
+➡️ [Estilos criados](#-os-estilos-de-jogo-criados)]
+
 ➡️ [Critérios de classificação](#-critérios-de-classificação-por-estilo)
+
 ➡️ [Sinergia de time e Top 4 IA](#-sinergia-de-time-e-campeão-ia)
+
 ➡️ [Como rodar o projeto](#-como-usar)
+
 ➡️ [Resultados e gráficos](#-entendendo-os-resultados)
+
 ➡️ [Créditos e licença](#-autoria-e-créditos)
 
 ---
