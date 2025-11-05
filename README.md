@@ -1,7 +1,3 @@
-Claro! Aqui está o mesmo conteúdo **com formatação ajustada** — mantendo **todas as palavras originais**, apenas melhorando espaçamento, hierarquia e legibilidade em Markdown:
-
----
-
 # 🎮 MLP – Estilos de Jogo no LoL Worlds 2024
 
 [![Python](https://img.shields.io/badge/Python-3.11+-blue?logo=python)](https://www.python.org/)
@@ -19,18 +15,6 @@ Além de classificar jogadores, a IA também calcula a **sinergia de cada time**
 
 ---
 
-## 📚 Sumário rápido
-
-- [Como foi feito](#-o-que-foi-feito-explicação-simples)
-- [Estilos criados](#-os-estilos-de-jogo-criados)
-- [Critérios de classificação](#-critérios-de-classificação-por-estilo)
-- [Sinergia de time e Top 4 IA](#-sinergia-de-time-e-campeão-ia)
-- [Como rodar o projeto](#-como-usar)
-- [Resultados e gráficos](#-entendendo-os-resultados)
-- [Créditos e licença](#-autoria-e-creditos)
-
----
-
 ## 🧠 O que foi feito (explicação simples)
 
 1. Foram coletados dados reais de **81 jogadores** do campeonato
@@ -43,7 +27,7 @@ Além de classificar jogadores, a IA também calcula a **sinergia de cada time**
 
 ---
 
-## 🔍 O que é uma MLP?
+## 🔍 O que é uma MLP
 
 A **MLP (Multi-Layer Perceptron)** é uma rede neural totalmente conectada que aprende padrões a partir de exemplos.
 Neste projeto, ela recebe estatísticas como **KDA, DPM, GPM, KP%, visão, Solo Kills, GD@15** e aprende a associá-las a um **estilo de jogo primário**.
@@ -67,7 +51,7 @@ Cada jogador pode ter **múltiplos estilos**. Para treinar, é escolhido um **Es
 
 ---
 
-## 🧩 Critérios de Classificação por Estilo
+## 🎯 Critérios de classificação por estilo
 
 | Estilo             | Regra (simplificada)                             | Interpretação breve                 |
 | :----------------- | :----------------------------------------------- | :---------------------------------- |
@@ -85,23 +69,23 @@ Carregador > Agressivo > Visionário > Suporte > Consistente > Volátil > Duelis
 
 ---
 
-## 🤝 Sinergia de Time e Campeão IA
+## 🤝 Sinergia de time e campeão IA
 
 **Synergy Score = 0,7 · StyleScore + 0,3 · PerfScore**
 
 **Top 4 IA (sinergia estilo + performance)**
 
-1. **Weibo Gaming** — 4,074
-2. **T1** — 4,063
-3. **Gen.G** — 3,617
-4. **Team Liquid** — 3,487
+1. 🏆 **Weibo Gaming** — ≈ 4,07
+2. 🥈 **T1** — ≈ 4,06
+3. 🥉 **Gen.G** — ≈ 3,62
+4. 💪 **Team Liquid** — ≈ 3,49
 
-**MVP IA:** `xiaohu` (Weibo Gaming) — Carregador, Agressivo, Consistente | DPM = 638.0
+**MVP IA:** `xiaohu` (Weibo Gaming)
 
 **Top 4 real:**
-🥇 T1 | 🥈 BLG | 🥉–4º Weibo Gaming & Gen.G (sem disputa de 3º lugar)
+🥇 T1 | 🥈 BLG | 🥉–4 Weibo / Gen.G
 
-A IA acertou **3 dos 4 times** do Top 4 real, apenas trocando a ordem.
+A IA acertou **3 dos 4 times reais**.
 
 ---
 
@@ -116,7 +100,7 @@ O script lê a base, calcula estilos, treina a MLP e gera relatórios em `output
 
 ---
 
-## 🗂️ Estrutura do Projeto
+## 🗂️ Estrutura do projeto
 
 ```
 📁 src/
@@ -138,11 +122,11 @@ O script lê a base, calcula estilos, treina a MLP e gera relatórios em `output
 
 ### ✅ Métricas
 
-* **Acurácia (hold-out):** 0,6800
-* **Precisão ponderada:** 0,7326
-* **Recall ponderado:** 0,6800
-* **F1 ponderado:** 0,6911
-* **Validação cruzada (5 folds):** média 0,7412 ± 0,0586
+* **Acurácia (hold-out):** 0,68
+* **Precisão ponderada:** 0,73
+* **Recall ponderado:** 0,68
+* **F1 ponderado:** 0,69
+* **Validação cruzada (5 folds):** média 0,74 ± 0,06
 
 ---
 
@@ -184,26 +168,26 @@ Campeão real: T1 🏆
 
 ---
 
-## 🧑‍🤝‍🧑 Estilo coletivo por time
+## 🧑‍🤝‍🧑 Estilo coletivo por time (exemplos)
 
-* **T1** — predominância *Consistente*.
-* **Weibo Gaming** — *Agressivo*.
-* **BLG** — *Agressivo*.
-* **Gen.G** — *Consistente*.
+* **T1** — predominância *Consistente*
+* **Weibo Gaming** — *Agressivo*
+* **BLG** — *Agressivo*
+* **Gen.G** — *Consistente*
 
 ---
 
 ## 🧪 Observações técnicas
 
-* LabelEncoder para dados categóricos.
-* StandardScaler (z-score).
-* Train/test split estratificado.
-* StratifiedKFold (5 folds).
-* **MLPClassifier** com `(128, 64)`, ReLU, `max_iter=3000`, `random_state=42`.
+* LabelEncoder para dados categóricos
+* StandardScaler (z-score)
+* Train/test split estratificado
+* StratifiedKFold (5 folds)
+* **MLPClassifier** com `(128, 64)`, ReLU, `max_iter=3000`, `random_state=42`
 
 ---
 
-## 👩‍💻 Autoria e Créditos
+## 👩‍💻 Autoria e créditos
 
 * **Autora:** Laura Barbosa Henrique (`@tinywin`)
 * **Instituição:** Universidade Federal do Tocantins (UFT)
@@ -217,7 +201,7 @@ Autor: **nxank4 (An)** — DOI: [10.34740/kaggle/dsv/9722676](https://doi.org/10
 
 ---
 
-## ⚖️ Licença e Uso
+## ⚖️ Licença e uso
 
 Projeto **educacional**, sem fins comerciais.
 Código e experimentos liberados para **aprendizado e pesquisa**, respeitando os termos do Kaggle.
@@ -237,12 +221,8 @@ Código e experimentos liberados para **aprendizado e pesquisa**, respeitando os
 A rede MLP identificou **padrões estatísticos coerentes** com estilos reais.
 Acertou 3 dos 4 times do Top 4 e destacou limitações quantitativas — sem captar aspectos humanos como:
 
-* sinergia em série MD5,
-* adaptação de draft,
-* leitura tática,
-* controle emocional,
-* impacto do MVP.
-
----
-
-Deseja que eu gere uma **versão PDF formatada** com este layout (capa, seções, ícones e sumário automático)?
+* sinergia em série MD5
+* adaptação de draft
+* leitura tática
+* controle emocional
+* impacto do MVP
