@@ -1,6 +1,6 @@
 """
-Versão final melhorada:
- - Multiestilo (Agressivo, Carregador, Visionário, Suporte, Consistente, Pipoqueiro, Duelista, Equilibrado)
+ Versão final melhorada:
+ - Multiestilo (Agressivo, Carregador, Visionário, Suporte, Consistente, Volátil, Duelista, Equilibrado)
  - Solo Kills entra de verdade nas regras
  - Sinergia avançada por time (estilos + performance) para definir campeão IA e vice
  - MVP IA baseado em DPM/KDA/KP + estilos
@@ -25,7 +25,7 @@ from sklearn.metrics import (
     confusion_matrix,
     precision_recall_fscore_support,
 )
-    # StratifiedKFold para CV estratificada
+# StratifiedKFold para CV estratificada
 from sklearn.model_selection import train_test_split, cross_val_score, StratifiedKFold
 from sklearn.neural_network import MLPClassifier
 from sklearn.pipeline import Pipeline
@@ -146,7 +146,7 @@ def compute_estilos(df: pd.DataFrame, thr: Dict[str, float]) -> Tuple[pd.Series,
       - Estilos: string multiestilo ("Agressivo, Duelista", etc.)
       - Estilo_Primario: primeiro estilo pela prioridade
 
-    Prioridade: Carregador > Agressivo > Visionário > Suporte > Consistente > Pipoqueiro > Duelista > Equilibrado
+    Prioridade: Carregador > Agressivo > Visionário > Suporte > Consistente > Volátil > Duelista > Equilibrado
     """
     cm = thr["col_map"]
     DPM = df[cm["DPM"]]
@@ -200,9 +200,9 @@ def compute_estilos(df: pd.DataFrame, thr: Dict[str, float]) -> Tuple[pd.Series,
         if (KDA.iloc[i] > thr["p75_KDA"]) and (deaths.iloc[i] < thr["mean_deaths"]):
             tags.append("Consistente")
 
-        # Pipoqueiro
+        # Volátil
         if (GD15.iloc[i] < 0) and (deaths.iloc[i] > thr["mean_deaths"]):
-            tags.append("Pipoqueiro")
+            tags.append("Volátil")
 
         # Duelista
         if (SK.iloc[i] > thr["p75_SoloKills"]) and (DPM.iloc[i] > thr["mean_DPM"]):
@@ -219,7 +219,7 @@ def compute_estilos(df: pd.DataFrame, thr: Dict[str, float]) -> Tuple[pd.Series,
                 "Visionário",
                 "Suporte",
                 "Consistente",
-                "Pipoqueiro",
+                "Volátil",
                 "Duelista",
             ]:
                 if p in tags:
@@ -505,14 +505,14 @@ def compute_team_synergy(pred_df: pd.DataFrame, df_full: pd.DataFrame) -> pd.Dat
          +0.4 se tiver Consistente  (limitado a no máx. +2.2)
        - Profundidade de Carregador:
          +0.5 por Carregador extra além do primeiro (máx. +1.0)
-       - Penalidade de Pipoqueiro:
-         -0.5 por Pipoqueiro (limitado a no mínimo -2.0)
+       - Penalidade de Volátil:
+         -0.8 por Volátil (limitado a no mínimo -3.0)
        - Bônus de duplas:
          +0.6 se tiver Carregador e Suporte
          +0.6 se tiver Carregador e Visionário
          +0.3 se tiver Agressivo e Duelista  (máx. +1.5)
 
-       style_score = diversity_score + core_score + carry_depth_score + pair_score + pipo_penalty
+       style_score = diversity_score + core_score + carry_depth_score + pair_score + vol_penalty
 
     2) Performance score (por time):
        - Calculado em cima das médias por time:
@@ -568,7 +568,7 @@ def compute_team_synergy(pred_df: pd.DataFrame, df_full: pd.DataFrame) -> pd.Dat
         num_cons = int(vc.get("Consistente", 0))
         num_vis = int(vc.get("Visionário", 0))
         num_sup = int(vc.get("Suporte", 0))
-        num_pipo = int(vc.get("Pipoqueiro", 0))
+        num_vol = int(vc.get("Volátil", 0))
         has_agressivo = vc.get("Agressivo", 0) > 0
         has_duelista = vc.get("Duelista", 0) > 0
 
@@ -603,9 +603,9 @@ def compute_team_synergy(pred_df: pd.DataFrame, df_full: pd.DataFrame) -> pd.Dat
         extra_carries = max(num_car - 1, 0)
         carry_depth_score = min(extra_carries * 0.5, 1.0)
 
-        # Penalidade de Pipoqueiro
-        pipo_penalty = -0.5 * num_pipo
-        pipo_penalty = max(pipo_penalty, -2.0)
+        # Penalidade de Volátil (mais pesada agora)
+        vol_penalty = -0.8 * num_vol
+        vol_penalty = max(vol_penalty, -3.0)
 
         # Bônus de duplas
         pair_score = 0.0
@@ -617,7 +617,7 @@ def compute_team_synergy(pred_df: pd.DataFrame, df_full: pd.DataFrame) -> pd.Dat
             pair_score += 0.3
         pair_score = min(pair_score, 1.5)
 
-        style_score = diversity_score + core_score + carry_depth_score + pair_score + pipo_penalty
+        style_score = diversity_score + core_score + carry_depth_score + pair_score + vol_penalty
 
         # ===== perf_score =====
         perf = perf_by_team.get(
@@ -771,6 +771,74 @@ def select_mvp(
 
 
 # ==========================
+# Resumo de estilo por time (texto)
+# ==========================
+
+
+def summarize_team_styles_text(result_df_all: pd.DataFrame) -> List[str]:
+    """
+    Gera linhas de texto descrevendo o estilo de cada time
+    com base nos estilos dos jogadores.
+    """
+    lines: List[str] = ["\n5️⃣ Estilo de jogo por time (baseado nos jogadores)"]
+    for team, grp in result_df_all.groupby("TeamName"):
+        all_styles: List[str] = []
+        for s in grp["Estilos"].astype(str):
+            parts = [p.strip() for p in s.split(",") if p.strip()]
+            all_styles.extend(parts)
+
+        if not all_styles:
+            lines.append(f"- {team}: sem estilos atribuídos")
+            continue
+
+        vc = pd.Series(all_styles).value_counts()
+        main_style = vc.idxmax()
+
+        desc_parts: List[str] = []
+
+        num_car = int(vc.get("Carregador", 0))
+        num_aggr = int(vc.get("Agressivo", 0))
+        num_vis = int(vc.get("Visionário", 0))
+        num_sup = int(vc.get("Suporte", 0))
+        num_cons = int(vc.get("Consistente", 0))
+        num_vol = int(vc.get("Volátil", 0))
+
+        if num_car >= 2:
+            desc_parts.append("foco em Carregadores")
+        elif num_car == 1:
+            desc_parts.append("um Carregador principal")
+
+        if num_aggr >= 2:
+            desc_parts.append("tendência agressiva")
+        elif num_aggr == 1:
+            desc_parts.append("toque agressivo")
+
+        if num_vis + num_sup >= 2:
+            desc_parts.append("boa presença de visão/suporte")
+        elif num_vis + num_sup == 1:
+            desc_parts.append("algum suporte de visão")
+
+        if num_cons >= 2:
+            desc_parts.append("núcleo consistente")
+        elif num_cons == 1:
+            desc_parts.append("peça consistente")
+
+        if num_vol >= 2:
+            desc_parts.append("mais volátil no early game")
+        elif num_vol == 1:
+            desc_parts.append("ligeiramente volátil")
+
+        if not desc_parts:
+            desc = "perfil equilibrado entre os estilos presentes"
+        else:
+            desc = "; ".join(desc_parts)
+
+        lines.append(f"- {team}: predominância \"{main_style}\" ({desc})")
+
+    return lines
+
+
+# ==========================
 # main()
 # ==========================
 
@@ -859,6 +927,13 @@ def main():
         result_df_all[["TeamName", "Estilo Previsto"]]
     )
 
+    # Sinergia por time (para top 4, campeão IA, etc.)
+    synergy_df = compute_team_synergy(
+        result_df_all[["PlayerName", "TeamName", "Estilos"]], df
+    )
+    champ_team, champ_details = select_ia_champion(synergy_df)
+    vice_team = str(synergy_df.iloc[1]["TeamName"]) if len(synergy_df) > 1 else ""
+
     header_text = format_header(
         "CLASSIFICAÇÃO DE ESTILO DE JOGO", "2024 LoL Championship Player Stats"
     )
@@ -906,14 +981,13 @@ def main():
         f" - CSV com todas as previsões: {pred_csv_path}",
     ]
 
-    # Principais times (usando TODAS as previsões)
-    top_teams = result_df_all["TeamName"].value_counts().head(5).index.tolist()
-    lines_top = ["\n🏆 Principais resultados:"]
-    for team in top_teams:
-        row = dom_all[dom_all["TeamName"] == team]
-        if not row.empty:
-            estilo_dom = row.iloc[0]["Estilo Previsto"]
-            lines_top.append(f" - {team}: predominância “{estilo_dom}”")
+    # 🏆 Top 4 da IA (sinergia)
+    lines_top = ["\n🏆 Top 4 times segundo a IA (sinergia estilo + performance):"]
+    for rank, row in enumerate(synergy_df.head(4).itertuples(index=False), start=1):
+        lines_top.append(
+            f" {rank}. {row.TeamName} — sinergia={row.synergy_score:.3f} "
+            f"(style={row.style_score:.3f}, perf={row.perf_score:.3f})"
+        )
 
     # Destaques curiosos (baseado em todo o dataset)
     lines_fun = ["\n😂 Destaques curiosos:"]
@@ -922,27 +996,30 @@ def main():
         .size()
         .reset_index(name="count")
     )
-    pipo_all = pipo_all[pipo_all["Estilo Previsto"] == "Pipoqueiro"]
+    pipo_all = pipo_all[pipo_all["Estilo Previsto"] == "Volátil"]
     if not pipo_all.empty:
         top_pipo = pipo_all.sort_values("count", ascending=False).head(1).iloc[0]
         lines_fun.append(
-            f" - {top_pipo['TeamName']} lidera em 'Pipoqueiro' (segundo a IA)"
+            f" - {top_pipo['TeamName']} lidera em 'Volátil' (segundo a IA)"
         )
     else:
-        lines_fun.append(" - Ninguém 'Pipoqueiro' hoje – sem pipocadas! 😅")
+        lines_fun.append(" - Ninguém 'Volátil' hoje – sem oscilações! 😅")
 
     most_common = result_df_all["Estilo Previsto"].value_counts().idxmax()
     lines_fun.append(f" - Estilo mais comum previsto: {most_common}")
 
-    # 5️⃣ Lista completa de jogadores
+    # 5️⃣ Estilo por time (texto)
+    team_style_lines = summarize_team_styles_text(result_df_all)
+
+    # 6️⃣ Lista completa de jogadores
     sorted_res = result_df_all.sort_values(
         ["TeamName", "PlayerName"], ascending=[True, True]
     ).reset_index(drop=True)
 
-    sec5_list = ["\n5️⃣ Lista de jogadores e estilos previstos"]
+    sec6_list = ["\n6️⃣ Lista de jogadores e estilos previstos"]
     for i, row in enumerate(sorted_res.itertuples(index=False, name="Row"), start=1):
         estilos_multi_row = getattr(row, "Estilos")
-        sec5_list.append(
+        sec6_list.append(
             f"{i}. {row.PlayerName} ({row.TeamName}) — {estilos_multi_row}"
         )
 
@@ -953,54 +1030,48 @@ def main():
     c1 = int((n_styles == 1).sum())
     c2 = int((n_styles == 2).sum())
     c3p = int((n_styles >= 3).sum())
-    sec5_list.append(
+    sec6_list.append(
         f"Jogadores com 1 estilo: {c1} | 2 estilos: {c2} | 3+ estilos: {c3p}"
     )
 
-    # 6️⃣ Cerimônia Final IA
-    synergy_df = compute_team_synergy(
-        result_df_all[["PlayerName", "TeamName", "Estilos"]], df
-    )
-    champ_team, champ_details = select_ia_champion(synergy_df)
-    vice_team = str(synergy_df.iloc[1]["TeamName"]) if len(synergy_df) > 1 else ""
-
-    sec6 = ["\n6️⃣ Cerimônia Final"]
+    # 7️⃣ Cerimônia Final IA
+    sec7 = ["\n7️⃣ Cerimônia Final"]
     if champ_team:
-        sec6 += [
+        sec7 += [
             f"🥇 Segundo a IA, o time mais completo (estilos + performance) é: {champ_team}",
             f" - Pontuação de sinergia: {champ_details.get('synergy_score', 'N/A'):.3f}",
             f" - Estilos distintos: {champ_details.get('distinct_styles', 'N/A')} | Carregadores: {champ_details.get('num_carregador', 'N/A')} | Consistentes: {champ_details.get('num_consistente', 'N/A')}",
         ]
         if vice_team:
-            sec6.append(f"🥈 Vice-campeão técnico segundo a IA: {vice_team}")
+            sec7.append(f"🥈 Vice-campeão técnico segundo a IA: {vice_team}")
 
         mvp_player, mvp_style, mvp_dpm = select_mvp(
             df, result_df_all[["PlayerName", "TeamName", "Estilos"]], champ_team
         )
         if mvp_player:
-            sec6.append(
+            sec7.append(
                 f"🏅 MVP segundo a IA: {mvp_player} ({champ_team}) — {mvp_style}, DPM={mvp_dpm:.1f}"
             )
         else:
-            sec6.append("🏅 MVP segundo a IA: não foi possível determinar")
+            sec7.append("🏅 MVP segundo a IA: não foi possível determinar")
     else:
-        sec6.append("Não foi possível determinar o campeão pela sinergia.")
+        sec7.append("Não foi possível determinar o campeão pela sinergia.")
 
-    sec6 += [
+    sec7 += [
         "\n🎭 Encerramento:",
         "Seja qual for o resultado técnico,",
         "o Campeão real do Worlds 2024 é a T1.",
         "MVP real: Faker (T1).",
     ]
 
-    # 7️⃣ Limitações e Trabalhos Futuros
-    sec7 = [
-        "\n7️⃣ Limitações e Trabalhos Futuros",
+    # 8️⃣ Limitações e Trabalhos Futuros
+    sec8 = [
+        "\n8️⃣ Limitações e Trabalhos Futuros",
         "",
         "Apesar dos resultados interessantes, este modelo tem algumas limitações importantes:",
         "",
         "- Tamanho da amostra: o conjunto de dados possui apenas 81 jogadores. Isso é pouco para um modelo de rede neural, o que pode tornar a acurácia sensível a pequenas alterações no split de treino e teste.",
-        "- Rótulos heurísticos: os estilos de jogo (Carregador, Agressivo, Visionário, Suporte, Consistente, Pipoqueiro, Duelista, Equilibrado) não vieram rotulados no dataset original. Eles foram definidos a partir de regras manuais (heurísticas) com base em estatísticas como DPM, KDA, KP%, visão e Solo Kills. Ou seja, o modelo aprende a reproduzir essas regras, e não um 'rótulo oficial' dado por analistas humanos.",
+        "- Rótulos heurísticos: os estilos de jogo (Carregador, Agressivo, Visionário, Suporte, Consistente, Volátil, Duelista, Equilibrado) não vieram rotulados no dataset original. Eles foram definidos a partir de regras manuais (heurísticas) com base em estatísticas como DPM, KDA, KP%, visão e Solo Kills. Ou seja, o modelo aprende a reproduzir essas regras, e não um 'rótulo oficial' dado por analistas humanos.",
         "- Multiestilo vs. rótulo único: na prática, vários jogadores recebem múltiplos estilos (por exemplo, um jogador pode ser ao mesmo tempo Carregador e Duelista). Porém, para treinar o MLP, foi necessário escolher apenas um estilo primário por jogador. Um modelo multi-rótulo (multi-label) poderia representar melhor essa sobreposição de papéis.",
         "- Contexto de série e draft: o modelo não leva em conta informações de draft (campeões escolhidos), adversário e contexto de série (MD3, MD5, fase de grupos, mata-mata). Ele trabalha apenas com médias agregadas do jogador no campeonato, o que simplifica muito a realidade competitiva.",
         "",
@@ -1012,9 +1083,9 @@ def main():
         "- Comparar a MLP com modelos mais simples (por exemplo, árvores de decisão e random forests) para avaliar se a complexidade da rede neural é realmente necessária para esse problema.",
     ]
 
-    # 8️⃣ Interpretação dos resultados da IA x campeão real
-    sec8 = [
-        "\n8️⃣ Interpretação dos resultados da IA",
+    # 9️⃣ Interpretação dos resultados da IA x campeão real
+    sec9 = [
+        "\n9️⃣ Interpretação dos resultados da IA",
         "",
         "Em algumas execuções do modelo, a IA aponta times como Gen.G, Bilibili Gaming ou Weibo Gaming como os mais 'equilibrados e taticamente completos', principalmente por concentrarem jogadores com alto DPM, boa KDA e papéis bem definidos (Carregadores, Visionários e Consistentes).",
         "",
@@ -1022,7 +1093,7 @@ def main():
         "",
         "Na realidade competitiva, o campeão do Worlds 2024 foi a T1, com o Faker como principal referência. Isso evidencia uma diferença importante: o modelo enxerga apenas números médios por jogador, enquanto o resultado real depende de fatores que não estão no dataset, como adaptação de draft, pressão de palco, leitura de série MD5, sinergia em momentos decisivos e o famoso 'clutch' em jogos-chave.",
         "",
-        "Em resumo, a IA mostra quais times e jogadores se destacam estatisticamente, mas o título da T1 lembra que, em esportes eletrônicos, nem sempre o campeão técnico é o campeão da taça. O modelo ajuda a contar parte da história; o servidor, o palco e o Faker cuidam do resto.",
+        "Em resumo, a IA mostra quais times e jogadores se destacam estatisticamente, mas o título da T1 lembra que, em esportes eletrônicos, nem sempre o campeão técnico é o campeão da taça.",
     ]
 
     # Unificar tudo no relatório
@@ -1034,10 +1105,11 @@ def main():
         *sec4,
         *lines_top,
         *lines_fun,
-        *sec5_list,
-        *sec6,
+        *team_style_lines,
+        *sec6_list,
         *sec7,
         *sec8,
+        *sec9,
     ]
     relatorio_texto = "\n".join(relatorio_partes)
 
