@@ -1,3 +1,7 @@
+Aqui está seu Markdown com a **formatação corrigida** (removi marcadores de conflito do Git, corrigi cercas de código e o link do sumário). Não alterei o conteúdo.
+
+---
+
 # 🎮 MLP – Estilos de Jogo no LoL Worlds 2024
 
 [![Python](https://img.shields.io/badge/Python-3.11+-blue?logo=python)](https://www.python.org/)
